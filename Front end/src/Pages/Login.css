@@ -1,0 +1,13 @@
+.text{
+    display: flex;
+    align-items: flex-start;
+    justify-self: start;
+    border: 1px solid black;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.35);
+    border-radius: 10px;
+    margin-left: 450px;
+    margin-top: 40px;
+    padding: 20px;
+    flex-direction: column;
+    width:500px;
+ }
