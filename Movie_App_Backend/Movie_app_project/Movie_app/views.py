@@ -19,19 +19,24 @@ class Signupview(APIView):
 
     def post(self,request):
         
-        data=json.loads(request.body)
-        userexist=User.objects.filter(username=data["username"])
-        if not userexist:
-            serializer=Signupserializer(data=data)
-            if serializer.is_valid():
-              user=serializer.save()
-              refresh=RefreshToken.for_user(user)
-              return JsonResponse({
-                "Refresh_token":str(refresh),
-                "Access_token":str(refresh.access_token),
-                "data":serializer.data,
-              },status=status.HTTP_201_CREATED)
-        return JsonResponse ({"message":"Account is Already Exist"}) 
+        data = json.loads(request.body)
+        user_exist = User.objects.filter(username=data["username"])
+
+        if user_exist.exists():
+            return JsonResponse({"message": "Account already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = Signupserializer(data=data)
+
+        if serializer.is_valid():
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+            return JsonResponse({
+                "Refresh_token": str(refresh),
+                "Access_token": str(refresh.access_token),
+                "data": serializer.data,
+            }, status=status.HTTP_201_CREATED)
+
+        return JsonResponse({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self,request):
         id=request.GET.get("id",'')
